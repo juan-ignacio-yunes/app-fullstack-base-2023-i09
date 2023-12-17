@@ -2,28 +2,29 @@
 var M;
 class Main implements EventListenerObject{
     public usuarios: Array<Usuario>= new Array<Usuario>();
-  
+
 
     private buscarPersonas() {
 
-   
+
         for (let u of this.usuarios) {
             console.log(u.mostrar(),this.usuarios.length);
         }
     }
+    
     private buscarDevices() {
-        
+
         let xmlRequest = new XMLHttpRequest();
-        
+
         xmlRequest.onreadystatechange = () => {
-     
+
             if (xmlRequest.readyState == 4) {
                 if(xmlRequest.status==200){
-                    console.log(xmlRequest.responseText, xmlRequest.readyState);    
+                    console.log(xmlRequest.responseText, xmlRequest.readyState);
                     let respuesta = xmlRequest.responseText;
                     let datos:Array<Device> = JSON.parse(respuesta);
-                    
-                    let ul = document.getElementById("listaDisp"); 
+
+                    let ul = document.getElementById("listaDisp");
 
                     for (let d of datos) {
                         let itemList =
@@ -38,11 +39,11 @@ class Main implements EventListenerObject{
                         <label>
                           Off
                           <input type="checkbox"`;
-                          itemList +=`nuevoAtt="${d.id}" id="cb_${d.id}"`
+                        itemList +=`nuevoAtt="${d.id}" id="cb_${d.id}"`
                         if (d.state) {
                             itemList+= ` checked `
                         }
-                        
+
                         itemList+= `>
                           <span class="lever"></span>
                           On
@@ -50,7 +51,7 @@ class Main implements EventListenerObject{
                       </div>
                         </a>
                       </li>`
-                       
+
                         ul.innerHTML += itemList;
 
                     }
@@ -64,29 +65,60 @@ class Main implements EventListenerObject{
                     console.log("no encontre nada");
                 }
             }
-            
+
         }
         xmlRequest.open("GET","http://localhost:8000/devices",true)
         xmlRequest.send();
     }
 
-    private ejecutarPost(id:number,state:boolean) {
+    private borrarDevices() {
+        let ul = document.getElementById("listaDisp");
+        console.log(ul)
+        // Verifica si la lista existe
+        if (ul) { //(listaUl) {
+            // forma 1 de eliminar lista: eliminar todos los elementos li dentro de ella
+            /*while (ul.firstChild) {
+                ul.removeChild(ul.firstChild);
+            }*/
+            //forma 2 de eliminar lista: asignarle contenido nulo
+            ul.innerHTML = ""
+            //probé y ambasfuncionan me quedo con la segunda porque me parece más práctica
+        }
+        console.log(ul);
+    }
+
+    private manipularLista() {
+        let ul = document.getElementById("listaDisp");
+        let botonListar = document.getElementById("btnListar");
+
+        if (ul && ul.childElementCount === 0) {
+            // Si la lista está vacía, mostrar y cambiar el botón a "Ocultar"
+            this.buscarDevices();
+            botonListar.innerText = "Ocultar";
+        } else {
+            // Si la lista está llena, ocultar y cambiar el botón a "Listar"
+            this.borrarDevices();
+            botonListar.innerText = "Listar";
+        }
+    }
+
+    private ejecutarPost(id: number, state: boolean) {
         let xmlRequest = new XMLHttpRequest();
 
         xmlRequest.onreadystatechange = () => {
             if (xmlRequest.readyState == 4) {
                 if (xmlRequest.status == 200) {
-                    console.log("llego resputa",xmlRequest.responseText);        
+                    console.log("llego resputa",xmlRequest.responseText);
                 } else {
                     alert("Salio mal la consulta");
                 }
             }
-            
-            
+
+
 
         }
-        
-       
+
+
         xmlRequest.open("POST", "http://localhost:8000/device", true)
         xmlRequest.setRequestHeader("Content-Type", "application/json");
         let s = {
@@ -104,33 +136,31 @@ class Main implements EventListenerObject{
             this.usuarios.push(usuari1);
             iNombre.value = "";
             iPassword.value = "";
-           
-            
+
+
             pInfo.innerHTML = "Se cargo correctamente!";
             pInfo.className ="textoCorrecto";
-            
+
         } else {
             pInfo.innerHTML = "Usuairo o contraseña incorrecta!!!";
             pInfo.className ="textoError";
         }
-        
-        
+
+
     }
 
     handleEvent(object: Event): void {
         let elemento = <HTMLElement>object.target;
-        
-        
-        if ("btnListar" == elemento.id) {
-            this.buscarDevices();
 
-            
+
+        if ("btnListar" == elemento.id) {
+            this.manipularLista();          
         } else if ("btnGuardar" == elemento.id) {
             this.cargarUsuario();
         } else if (elemento.id.startsWith("cb_")) {
             let checkbox = <HTMLInputElement>elemento;
             console.log(checkbox.getAttribute("nuevoAtt"),checkbox.checked, elemento.id.substring(3, elemento.id.length));
-            
+
             this.ejecutarPost(parseInt(checkbox.getAttribute("nuevoAtt")),checkbox.checked);
         }
 
@@ -138,7 +168,7 @@ class Main implements EventListenerObject{
 
 }
 
-    
+
 window.addEventListener("load", () => {
 
     var elems = document.querySelectorAll('select');
@@ -147,16 +177,19 @@ window.addEventListener("load", () => {
     var instances = M.Modal.init(elemsModal, "");
 
     let main1: Main = new Main();
-    let boton = document.getElementById("btnListar");
-    
-    boton.addEventListener("click", main1);   
+
+    /*let botonListar = document.getElementById("btnListar");
+    botonListar.addEventListener("click", main1);
+    */
+    let botonListar = document.getElementById("btnListar");
+    botonListar.addEventListener("click", main1);
 
     let botonGuardar = document.getElementById("btnGuardar");
-    botonGuardar.addEventListener("click",main1);
+    botonGuardar.addEventListener("click", main1);
 
     let checkbox = document.getElementById("cb");
     checkbox.addEventListener("click", main1);
-    
+
 
 
 });
