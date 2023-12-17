@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<!-- head del documento-->>
+<!-- head del documento-->
 
 <head>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -14,10 +14,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 
-<!-- body del documento-->>
+<!-- body del documento-->
 
 <body>
-    <!-- page header-->>
+    <!-- page header-->
     <header>
         <!-- Navigation bar -->
         <nav style="background-color:#124580">
@@ -30,31 +30,43 @@
         </nav>
     </header>
 
-    <!-- page main-->>
+    <!-- page main-->
     <main>
         <div class="container">
-            <div class="row">
+            <br/>
+            <h3>Smart Home Web Client!</h3>
+            <br/>
 
+            <div class="row">
+            
+                <!-- boton listar-->
+                <div class="col s6 m6 l6 xl6">
+                    <button class="btn waves-effect waves-light button-view" id="btnListar"
+                        name="btnListar">Listar</button>
+                </div>
+
+                <!-- boton send post-->
+                <div class="col s6 m6 l6 xl6">
+                    <button class="btn waves-effect waves-light button-view" id="sendPost"
+                        name="sendPost">Post</button>
+                </div>
+                
                 <!-- Modal Trigger -->
-                <p>
-                    <label hidden>
-                        <input type="checkbox" id="cb" />
-                        <span>Prender</span>
-                    </label>
-                </p>
-                <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
+                <div class="col s6 m6 l6 xl6">
+                    <a class="waves-effect waves-light btn modal-trigger" href="#modal1" id="btnModal">Modal</a>
+                </div>
 
                 <!-- Modal Structure -->
                 <div id="modal1" class="modal">
                     <div class="modal-content">
-                        <div class="col s12 m6 l6">
-                            <h1>Cargar usuario</h1>
+                        <div >
+                            <h1>Cargar dispositivo</h1>
                             <label for="iNombre">Nombre de usuario</label>
                             <input id="iNombre" type="text" value="" placeholder="jlopez" />
 
                             <div class="input-field">
-                                <input id="iPassword" type="password" class="validate">
                                 <label for="iPassword">Password</label>
+                                <input id="iPassword" type="password" class="validate">
                             </div>
 
                             <p>
@@ -68,50 +80,21 @@
                             <button id="btnGuardar" class="modal-close  btn">Guardar</button>
                         </div>
                     </div>
-
-                </div>
-
-                <div class="input-field col s12">
-                    <select>
-                        <option value="" disabled selected>Choose your option</option>
-                        <option value="1">Option 1</option>
-                        <option value="2">Option 2</option>
-                        <option value="3">Option 3</option>
-                    </select>
-                    <label>Materialize Select</label>
                 </div>
             </div>
 
-
-
-
-            <br/>
-            <h3>Smart Home Web Client!</h3>
-            <br/>
-            <div class="row">
-                <div class="col s4 m4 l2 xl2">
-                    <button class="btn waves-effect waves-light button-view" id="btnListar"
-                        name="btnListar">Listar</button>
-                </div>
-            </div>
-            
-            <div class="row">
-
+            <!--lista de devices-->
+            <div class="row"></div>
                 <div id="lista" miAtt="true" class="col s12 m6 l6">
                     <ul class="collection" id="listaDisp">
                     </ul>
                 </div>
-                
-                <div class="input-field col s12 m12 l12 xl12" hidden>
-                    <textarea id="textarea_1" class="materialize-textarea" style="height: 150px;" readonly></textarea>
-                </div>
-                
-                <p hidden>Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi, alias, pariatur tempore quas at iusto
-                    fugit nostrum consequuntur, quidem deleniti ad excepturi non adipisci voluptas eos nisi commodi
-                    necessitatibus dolorum.</p>
             </div>
+
         </div>
+
     </main>
+    
     <!-- Page Footer -->
     <footer class="page-footer" style="background-color:#124580">
         <div class="container">

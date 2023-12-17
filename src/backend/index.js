@@ -35,6 +35,8 @@ app.get("/otraCosa/:id/:algo",(req,res,next)=>{
     });
     
 });
+
+
 app.post("/device",(req,res,next)=>{
     console.log("Llego el post",
     "UPDATE Devices SET state = "+req.body.state+" WHERE id = "+req.body.id);
@@ -45,6 +47,7 @@ app.post("/device",(req,res,next)=>{
     }
     
 });
+
 app.get('/devices/', function(req, res, next) {
     devices = [
         { 

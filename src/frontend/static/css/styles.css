@@ -12,6 +12,11 @@ main {
 #btnListar{
     width: 100%;
 }
+
+#btnModal{
+    width: 100%;
+}
+
 .textoError{
     width: 50%;
     margin: auto;
