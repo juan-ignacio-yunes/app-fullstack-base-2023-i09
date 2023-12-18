@@ -145,7 +145,7 @@ class Main implements EventListenerObject {
         let s = {
             id: id,
             value: currentValue
-        };//el json a enviar en el body del post
+        };//el json a enviar en el body del put
 
         xmlRequest.send(JSON.stringify(s));
     }
@@ -172,7 +172,7 @@ class Main implements EventListenerObject {
         let s = {
             id: id,
             value: currentValue
-        };//el json a enviar en el body del post
+        };//el json a enviar en el body del put
 
         xmlRequest.send(JSON.stringify(s));
     }
@@ -251,24 +251,8 @@ class Main implements EventListenerObject {
 
             this.manipularLista();
         }
-    }
 
-    private pruebaPost() {
-        let xmlRequest = new XMLHttpRequest();
-
-        xmlRequest.onreadystatechange = () => {
-            if (xmlRequest.readyState == 4) {
-                if (xmlRequest.status == 200) {
-                    alert("llego respuesta del servidor: " + xmlRequest.status + ", " + xmlRequest.responseText);
-                } else {
-                    alert("Salio mal la consulta");
-                }
-            }
-        }
-
-        xmlRequest.open("POST", "http://localhost:8000/device", true)
-        xmlRequest.setRequestHeader("Content-Type", "application/json");
-        xmlRequest.send();
+        
     }
 
     handleEvent(object: Event): void {
@@ -281,9 +265,7 @@ class Main implements EventListenerObject {
         else if ("btnGuardar" == elemento.id) {
             this.agregarDispositivo();
         }
-        else if ("sendPost" == elemento.id) {
-            this.pruebaPost();
-        }else if (elemento.id.startsWith("range_")) {
+        else if (elemento.id.startsWith("range_")) {
             let range = <HTMLInputElement>elemento;
             console.log("deviceId: "+range.getAttribute("deviceId"));
             this.ejecutarPutRange(parseInt(range.getAttribute("deviceId")));
