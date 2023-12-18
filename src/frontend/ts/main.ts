@@ -13,65 +13,83 @@ class Main implements EventListenerObject {
     private getDevices() {
 
         let xmlRequest = new XMLHttpRequest();
-
+    
         xmlRequest.onreadystatechange = () => {
-
+    
             if (xmlRequest.readyState == 4) {
                 if (xmlRequest.status == 200) {
                     console.log(xmlRequest.responseText, xmlRequest.readyState);
                     let respuesta = xmlRequest.responseText;
                     let datos: Array<Device> = JSON.parse(respuesta);
-
+    
                     let ul = document.getElementById("listaDisp");
-
+    
                     for (let d of datos) {
-                        let itemList =
-                            ` <li class="collection-item avatar">
-                        <img src="./static/images/lightbulb.png" alt="" class="circle">
-                        <span class="title">${d.name}</span>
-                        <p>
-                         ${d.description}
-                        </p>
-                        <div class="switch">
-                        <label>
-                          Off
-                          <input type="checkbox"`;
-                        itemList += `deviceId="${d.id}" id="cb_${d.id}"`
-                        if (d.value) {
-                            itemList += ` checked `
+                        let itemList = `<li class="collection-item avatar">
+                            <img src="./static/images/lightbulb.png" alt="" class="circle">
+                            <span class="title">${d.name}</span>
+                            <p>${d.description}</p>`;
+    
+                        if (d.type === "on/off") {
+                            // Para los dispositivo que sean de tipo "on/off", se pone un switch
+                            itemList += `<div class="switch">
+                                <label>
+                                    Off
+                                    <input type="checkbox" deviceId="${d.id}" type="${d.type}" id="cb_${d.id}"${d.value ? " checked" : ""}>
+                                    <span class="lever"></span>
+                                    On
+                                </label>
+                            </div>`;
+                        } else if (d.type === "variable") {
+                            // y para los de tipo "variable" va un elemento range con mínimo 0% y máx 100%. Se pone en una columna de 6 espacios para que no ocupe todo el ancho del list item
+                            itemList += `<div class="row">
+                                <div class="col s6">
+                                <form action="#">
+                                    <p class="range-field">
+                                        <input type="range" deviceId="${d.id}" type="${d.type}" id="range_${d.id}" min="0" max="100" value="${d.value}" />
+                                    </p>
+                                </form>
+                                <label for="range_${d.id}_min">0%</label>
+                                <label for="range_${d.id}_max" class="right">100%</label>
+                                </div>
+                            </div>`;
                         }
-                        itemList += `>
-                          <span class="lever"></span>
-                          On
-                        </label>
-                      </div>
-                        <a href="#!" class="secondary-content">
-                        <label> Eliminar dispositivo </label><i class="Small material-icons" `;
-                        itemList += `eliminarDeviceId="${d.id}" id="eliminar_${d.id}">delete</i>
-                        
+    
+                        // Agrega el resto del contenido
+                        itemList += `<a href="#!" class="secondary-content">
+                            <label>Eliminar dispositivo </label>
+                            <i class="Small material-icons" eliminarDeviceId="${d.id}" id="eliminar_${d.id}">delete</i>
                         </a>
-                      </li>`
-
+                    </li>`;
+    
                         ul.innerHTML += itemList;
-
                     }
+    
                     for (let d of datos) {
-                        let checkbox = document.getElementById("cb_" + d.id);
+                        if (d.type === "on/off") {
+                            // Agrega el listener para el cambio de estado en el tipo "on/off"
+                            let checkbox = document.getElementById("cb_" + d.id);
+                            checkbox.addEventListener("change", this);
+                        } else if (d.type === "variable") {
+                            // Agrega el listener para el cambio de valor en el tipo "variable"
+                            let range = document.getElementById("range_" + d.id);
+                            range.addEventListener("input", this);
+                        }
+    
+                        // Agrega el listener para eliminar en ambos casos
                         let eliminar = document.getElementById("eliminar_" + d.id);
-
-                        checkbox.addEventListener("click", this);
                         eliminar.addEventListener("click", this);
                     }
-
                 } else {
-                    console.log("no encontre nada");
+                    console.log("No se encontraron dispositivos");
                 }
             }
-
-        }
-        xmlRequest.open("GET", "http://localhost:8000/devices", true)
+        };
+    
+        xmlRequest.open("GET", "http://localhost:8000/devices", true);
         xmlRequest.send();
     }
+    
 
     private borrarDevices() {
         let ul = document.getElementById("listaDisp");
@@ -93,7 +111,6 @@ class Main implements EventListenerObject {
         let ul = document.getElementById("listaDisp");
         let botonListar = document.getElementById("btnListar");
         this.borrarDevices();
-
         if (ul && ul.childElementCount === 0) {
             // Si la lista está vacía, mostrar y cambiar el botón a "Ocultar"
             this.getDevices();
@@ -101,34 +118,65 @@ class Main implements EventListenerObject {
         }
     }
 
-    private ejecutarPost(id: number, state: boolean) {
+    private ejecutarPutCB(id: number) {
         let xmlRequest = new XMLHttpRequest();
 
         xmlRequest.onreadystatechange = () => {
             if (xmlRequest.readyState == 4) {
                 if (xmlRequest.status == 200) {
-                    console.log("llego resputa", xmlRequest.responseText);
+                    console.log("respuesta del backend: status "+ xmlRequest.status +", "+ xmlRequest.responseText);
                 } else {
-                    alert("Salio mal la consulta");
+                    alert("Error en la consulta: satus " + xmlRequest.status + ', ' + xmlRequest.responseText);
                 }
             }
         }
 
-        xmlRequest.open("POST", "http://localhost:8000/device", true)
+        xmlRequest.open("PUT", "http://localhost:8000/device", true);
         xmlRequest.setRequestHeader("Content-Type", "application/json");
+
+        let checkbox = <HTMLInputElement>document.getElementById(`cb_${id}`);
+        let currentValue = checkbox.checked ? 1 : 0; // 1 si está activado, 0 si está desactivado
+        
+        let s = {
+            id: id,
+            value: currentValue
+        };//el json a enviar en el body del post
+
+        xmlRequest.send(JSON.stringify(s));
+    }
+
+    private ejecutarPutRange(id: number) {
+        let xmlRequest = new XMLHttpRequest();
+        
+        xmlRequest.onreadystatechange = () => {
+            if (xmlRequest.readyState == 4) {
+                if (xmlRequest.status == 200) {
+                    console.log("respuesta del backend: status "+ xmlRequest.status +", "+ xmlRequest.responseText);
+                } else {
+                    alert("Error en la consulta: satus " + xmlRequest.status + ', ' + xmlRequest.responseText);
+                }
+            }
+        }
+
+        xmlRequest.open("PUT", "http://localhost:8000/device", true);
+        xmlRequest.setRequestHeader("Content-Type", "application/json");
+
+        let range = <HTMLInputElement>document.getElementById(`range_${id}`);
+        let currentValue = parseInt(range.value)
 
         let s = {
             id: id,
-            state: state
-        }; //el json a enviar en el body del post
+            value: currentValue
+        };//el json a enviar en el body del post
+
         xmlRequest.send(JSON.stringify(s));
     }
 
     private eliminarDispositivo(id: number) {
-        console.log("se pega a ",`http://localhost:8000/devices/:${id}`);
-        
+        console.log("se pega a ", `http://localhost:8000/devices/:${id}`);
+
         let xmlRequest = new XMLHttpRequest();
-        
+
         xmlRequest.onreadystatechange = () => {
             if (xmlRequest.readyState == 4) {
                 if (xmlRequest.status == 200) {
@@ -197,17 +245,21 @@ class Main implements EventListenerObject {
 
         if ("btnListar" == elemento.id) {
             this.manipularLista();
-        } 
+        }
         else if ("btnGuardar" == elemento.id) {
             this.agregarDispositivo();
-        } 
+        }
         else if ("sendPost" == elemento.id) {
             this.pruebaPost();
-        } 
+        }else if (elemento.id.startsWith("range_")) {
+            let range = <HTMLInputElement>elemento;
+            console.log("deviceId: "+range.getAttribute("deviceId"));
+            this.ejecutarPutRange(parseInt(range.getAttribute("deviceId")));
+        }
         else if (elemento.id.startsWith("cb_")) {
             let checkbox = <HTMLInputElement>elemento;
-            console.log(checkbox.getAttribute("deviceId"), checkbox.checked, elemento.id.substring(3, elemento.id.length));
-            this.ejecutarPost(parseInt(checkbox.getAttribute("deviceId")), checkbox.checked);
+            console.log(checkbox.getAttribute("deviceId"));
+            this.ejecutarPutCB(parseInt(checkbox.getAttribute("deviceId")));
         }
         else if (elemento.id.startsWith("eliminar_")) {
             let eliminar = <HTMLInputElement>elemento;
