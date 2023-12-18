@@ -2,13 +2,15 @@
     <img src="doc/gotoiot-logo.png" alt="logo" title="Goto IoT" align="right" width="60" height="60" />
 </a>
 
-<details><summary>
-
 Web App Full Stack Base
 =======================
 
-</summary><br>
+<details><summary>
 
+## Detalles técnicos (elaborados por los docentes de la cátedra)
+
+
+</summary><br>
 Yendo al grano, la idea es que mediane luego de descargar el reporsitorio y ejecutar el comando docker-compose up puedas ver una página como esta en tu servidor local:
 
 
@@ -255,6 +257,8 @@ Las colaboraciones principales fueron realizadas por:
 * **[Brian Ducca](https://github.com/brianducca)**: Ayuda para conectar el backend a la base de datos, puesta a punto de imagen de Docker.
 
 También podés mirar todas las personas que han participado en la [lista completa de contribuyentes](https://github.com/###/contributors).
+
+</details>
 
 ## Licencia 📄
 
