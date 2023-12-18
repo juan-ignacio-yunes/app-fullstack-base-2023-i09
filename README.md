@@ -2,6 +2,16 @@
     <img src="doc/gotoiot-logo.png" alt="logo" title="Goto IoT" align="right" width="60" height="60" />
 </a>
 
+<details><summary>
+
+Web App Full Stack Base
+=======================
+
+</summary><br>
+
+Yendo al grano, la idea es que mediane luego de descargar el reporsitorio y ejecutar el comando docker-compose up puedas ver una página como esta en tu servidor local:
+
+
 Web App Full Stack Base
 =======================
 
