@@ -1,15 +1,15 @@
 
 var M;
-class Main implements EventListenerObject{
-    public dispositivos: Array<Device>= new Array<Device>();
+class Main implements EventListenerObject {
+    public dispositivos: Array<Device> = new Array<Device>();
 
 
     private buscarPersonas() {
         for (let u of this.dispositivos) {
-            console.log(u.mostrar(),this.dispositivos.length);
+            console.log(u.mostrar(), this.dispositivos.length);
         }
     }
-    
+
     private getDevices() {
 
         let xmlRequest = new XMLHttpRequest();
@@ -17,10 +17,10 @@ class Main implements EventListenerObject{
         xmlRequest.onreadystatechange = () => {
 
             if (xmlRequest.readyState == 4) {
-                if(xmlRequest.status==200){
+                if (xmlRequest.status == 200) {
                     console.log(xmlRequest.responseText, xmlRequest.readyState);
                     let respuesta = xmlRequest.responseText;
-                    let datos:Array<Device> = JSON.parse(respuesta);
+                    let datos: Array<Device> = JSON.parse(respuesta);
 
                     let ul = document.getElementById("listaDisp");
 
@@ -32,21 +32,23 @@ class Main implements EventListenerObject{
                         <p>
                          ${d.description}
                         </p>
-                        <a href="#!" class="secondary-content">
                         <div class="switch">
                         <label>
                           Off
                           <input type="checkbox"`;
-                        itemList +=`deviceId="${d.id}" id="cb_${d.id}"`
+                        itemList += `deviceId="${d.id}" id="cb_${d.id}"`
                         if (d.value) {
-                            itemList+= ` checked `
+                            itemList += ` checked `
                         }
-
-                        itemList+= `>
+                        itemList += `>
                           <span class="lever"></span>
                           On
                         </label>
                       </div>
+                        <a href="#!" class="secondary-content">
+                        <label> Eliminar dispositivo </label><i class="Small material-icons" `;
+                        itemList += `eliminarDeviceId="${d.id}" id="eliminar_${d.id}">delete</i>
+                        
                         </a>
                       </li>`
 
@@ -55,17 +57,19 @@ class Main implements EventListenerObject{
                     }
                     for (let d of datos) {
                         let checkbox = document.getElementById("cb_" + d.id);
+                        let eliminar = document.getElementById("eliminar_" + d.id);
 
                         checkbox.addEventListener("click", this);
+                        eliminar.addEventListener("click", this);
                     }
 
-                }else{
+                } else {
                     console.log("no encontre nada");
                 }
             }
 
         }
-        xmlRequest.open("GET","http://localhost:8000/devices",true)
+        xmlRequest.open("GET", "http://localhost:8000/devices", true)
         xmlRequest.send();
     }
 
@@ -88,15 +92,12 @@ class Main implements EventListenerObject{
     private manipularLista() {
         let ul = document.getElementById("listaDisp");
         let botonListar = document.getElementById("btnListar");
+        this.borrarDevices();
 
         if (ul && ul.childElementCount === 0) {
             // Si la lista está vacía, mostrar y cambiar el botón a "Ocultar"
             this.getDevices();
-            botonListar.innerText = "Ocultar";
-        } else {
-            // Si la lista está llena, ocultar y cambiar el botón a "Listar"
-            this.borrarDevices();
-            botonListar.innerText = "Listar";
+            //botonListar.innerText = "Ocultar";
         }
     }
 
@@ -106,32 +107,55 @@ class Main implements EventListenerObject{
         xmlRequest.onreadystatechange = () => {
             if (xmlRequest.readyState == 4) {
                 if (xmlRequest.status == 200) {
-                    console.log("llego resputa",xmlRequest.responseText);
+                    console.log("llego resputa", xmlRequest.responseText);
                 } else {
                     alert("Salio mal la consulta");
                 }
             }
-        }      
+        }
 
         xmlRequest.open("POST", "http://localhost:8000/device", true)
         xmlRequest.setRequestHeader("Content-Type", "application/json");
-        
+
         let s = {
             id: id,
-            state: state   }; //el json a enviar en el body del post
+            state: state
+        }; //el json a enviar en el body del post
         xmlRequest.send(JSON.stringify(s));
     }
 
-    private agregarDispositivo(): void{
-        let iNombre =<HTMLInputElement> document.getElementById("iNombre");
-        let iDescripcion =<HTMLInputElement> document.getElementById("iDescripcion");
+    private eliminarDispositivo(id: number) {
+        console.log("se pega a ",`http://localhost:8000/devices/:${id}`);
+        
+        let xmlRequest = new XMLHttpRequest();
+        
+        xmlRequest.onreadystatechange = () => {
+            if (xmlRequest.readyState == 4) {
+                if (xmlRequest.status == 200) {
+                    console.log("respuesta del backend", xmlRequest.responseText);
+                } else {
+                    alert("request delete fallido");
+                }
+            }
+        }
+
+        xmlRequest.open("DELETE", `http://localhost:8000/devices/${id}`, true)
+        xmlRequest.setRequestHeader("Content-Type", "application/json");
+        xmlRequest.send();
+
+        this.manipularLista();
+    }
+
+    private agregarDispositivo(): void {
+        let iNombre = <HTMLInputElement>document.getElementById("iNombre");
+        let iDescripcion = <HTMLInputElement>document.getElementById("iDescripcion");
         let iTipo = <HTMLSelectElement | null>document.querySelector('select');
         let pInfo = document.getElementById("pInfo");
         // Verifica si los campos requeridos están completados
         if (iNombre.value.trim() === "" || !iTipo || iTipo.value === "") {
             // Muestra un mensaje de error o realiza la lógica que desees
             pInfo.innerText = "Asegurate de completar los campos Nombre y Tipo";
-            pInfo.className ="textoError";
+            pInfo.className = "textoError";
         } else {
             // Si todo está bien, toma los valores, limpia el contenido de los campos y cierra el modal
             let dispositivo1: Device = new Device(iNombre.value, iDescripcion.value, iTipo.value, 0);
@@ -141,7 +165,7 @@ class Main implements EventListenerObject{
             iTipo.value == "";
 
             pInfo.innerText = "Dispositivo agregado correctamente";
-            pInfo.className ="textoCorrecto";
+            pInfo.className = "textoCorrecto";
             M.Modal.getInstance(document.getElementById('modal1')).close();
             pInfo.innerText = "";
 
@@ -155,12 +179,12 @@ class Main implements EventListenerObject{
         xmlRequest.onreadystatechange = () => {
             if (xmlRequest.readyState == 4) {
                 if (xmlRequest.status == 200) {
-                    alert("llego respuesta del servidor: "+ xmlRequest.status+ ", " + xmlRequest.responseText);
+                    alert("llego respuesta del servidor: " + xmlRequest.status + ", " + xmlRequest.responseText);
                 } else {
                     alert("Salio mal la consulta");
                 }
             }
-        }      
+        }
 
         xmlRequest.open("POST", "http://localhost:8000/device", true)
         xmlRequest.setRequestHeader("Content-Type", "application/json");
@@ -172,16 +196,22 @@ class Main implements EventListenerObject{
 
 
         if ("btnListar" == elemento.id) {
-            this.manipularLista();          
-        } else if ("btnGuardar" == elemento.id) {
+            this.manipularLista();
+        } 
+        else if ("btnGuardar" == elemento.id) {
             this.agregarDispositivo();
-        }else if ("sendPost" == elemento.id){
+        } 
+        else if ("sendPost" == elemento.id) {
             this.pruebaPost();
-        } else if (elemento.id.startsWith("cb_")) {
+        } 
+        else if (elemento.id.startsWith("cb_")) {
             let checkbox = <HTMLInputElement>elemento;
-            console.log(checkbox.getAttribute("deviceId"),checkbox.checked, elemento.id.substring(3, elemento.id.length));
-
-            this.ejecutarPost(parseInt(checkbox.getAttribute("deviceId")),checkbox.checked);
+            console.log(checkbox.getAttribute("deviceId"), checkbox.checked, elemento.id.substring(3, elemento.id.length));
+            this.ejecutarPost(parseInt(checkbox.getAttribute("deviceId")), checkbox.checked);
+        }
+        else if (elemento.id.startsWith("eliminar_")) {
+            let eliminar = <HTMLInputElement>elemento;
+            this.eliminarDispositivo(parseInt(eliminar.getAttribute("eliminarDeviceId")));
         }
 
     }
@@ -203,7 +233,7 @@ window.addEventListener("load", () => {
 
     let botonGuardar = document.getElementById("btnGuardar");
     botonGuardar.addEventListener("click", main1);
-    
+
     let sendPost = document.getElementById("sendPost");
     sendPost.addEventListener("click", main1);
 
