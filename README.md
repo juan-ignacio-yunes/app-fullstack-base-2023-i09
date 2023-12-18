@@ -3,9 +3,9 @@ Trabajo Final de la materia Desarrollo de Aplicaciones web
 ==========================================================
 
 Este repositorio cuenta con todos los archivos necesarios para correr una página web de tipo Single Page Application (SPA).
-La idea es que, luego descargar el repositorio y ejecutar el comando `docker-compose up`, accedas mediante un navegador web a la url `http://localhost:8000/` y veas algo como esto:
+La idea es que, luego descargar el repositorio y ejecutar el comando `docker-compose up`, accedas mediante un navegador web a la url `http://localhost:8000/` y administres los dispositivos en una app que s evería de la siguiente manera en pleno funcionamiento:
 
-![architecture](doc/webapp final.png)
+![architecture](doc/pantalla final.png)
 
 El objetivo de esta página es ser la interfaz que permita al usuario interactuar, de la manera más sencilla posible, con una base de datos. Esta aplicación es del tipo CRUD ya que permite al usuario pueda agregar dispositivos a la base de datos (<b>C</b>reate), consultar sus valores(<b>R</b>ead), actualizar la base de datos (<b>U</b>pdate) y borrar elementos contenidos en esta  (<b>D</b>elete). Para realizar estas tareas, se cuenta con los siguientes elementos principales:
 <ul>
@@ -42,7 +42,7 @@ Cada elemento de la lista, además de mostrar los valores del dispositivo, tiene
 
 2- Opción de eliminarlo definitivamente mediante un ícono que referencia a un recipiente de residuos. Para llevar a cabo esta acción el usuario solamente necesita pinchar el ícono con el mouse. Esto dispara una función que genera un request HTTP que usa el método DELETE y comunica al endpoint correspondiente los parámetros y sus valores para que se ejecute la query SQL {"DELETE FROM Devices WHERE id= "deviceId"} a la base de datos.
 
-![architecture](doc/botones.png)
+![architecture](doc/botones lista.png)
 
 El botón para agregar dispositivos, abre un elemento modal en el cuál se cargan los valores inciales. Dentro de este hay otro botón para guardar los valores cagados. Para poder xoncretar la acción se deben cumplir dos reglas: el dispositivo debe tener un nombre y un tipo. El nombre y la descripción se completan mediante el tecaldo y el ipo se elige de una lista desplegable. Al hacer click en el botón de guardado se ejecuta una función que envía una request tipo POST para generar el dispositivo en la base de datos. Del lado del backend se cuenta con una función que realiza una query {INSERT INTO Devices (name, description, value, type) VALUES (?, ?, '0', ?)", [req.body.name, req.body.description, req.body.type]}. Como se puede observar, el parámetro value de los dispositivos al momento de cargar es siempre cero, lo que equivale a 0% o apagado dependiendo de la naturaleza del elemento.
 
