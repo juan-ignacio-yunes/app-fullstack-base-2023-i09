@@ -19,7 +19,7 @@ El objetivo de esta página es ser la interfaz que permita al usuario interactua
 Ya hay algunos dispositivos cargados, por lo que comenzaremos a describir la funcionaidad del botón listar.
 Al acceder por primera vez a la página, esta se verá así:
 
-![architecture](doc/pantalla inicial.png)
+![architecture](doc/pantalla_inicial.png)
 
 Al clickear el botón listar, se desplegará una lista de los dispositivos que se encuentren cargados en la base de datos. Esto se haec mediante una función que dispara el protocolo HTTP con método GET al endpoint http://localhost:8000/devices/
 Cada uno de ellos tiene los siguientes parámetros:
@@ -42,7 +42,7 @@ Cada elemento de la lista, además de mostrar los valores del dispositivo, tiene
 
 2- Opción de eliminarlo definitivamente mediante un ícono que referencia a un recipiente de residuos. Para llevar a cabo esta acción el usuario solamente necesita pinchar el ícono con el mouse. Esto dispara una función que genera un request HTTP que usa el método DELETE y comunica al endpoint correspondiente los parámetros y sus valores para que se ejecute la query SQL {"DELETE FROM Devices WHERE id= "deviceId"} a la base de datos.
 
-![architecture](doc/botones lista.png)
+![architecture](doc/botones_lista.png)
 
 El botón para agregar dispositivos, abre un elemento modal en el cuál se cargan los valores inciales. Dentro de este hay otro botón para guardar los valores cagados. Para poder xoncretar la acción se deben cumplir dos reglas: el dispositivo debe tener un nombre y un tipo. El nombre y la descripción se completan mediante el tecaldo y el ipo se elige de una lista desplegable. Al hacer click en el botón de guardado se ejecuta una función que envía una request tipo POST para generar el dispositivo en la base de datos. Del lado del backend se cuenta con una función que realiza una query {INSERT INTO Devices (name, description, value, type) VALUES (?, ?, '0', ?)", [req.body.name, req.body.description, req.body.type]}. Como se puede observar, el parámetro value de los dispositivos al momento de cargar es siempre cero, lo que equivale a 0% o apagado dependiendo de la naturaleza del elemento.
 
