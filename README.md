@@ -5,7 +5,7 @@ Trabajo Final de la materia Desarrollo de Aplicaciones web
 Este repositorio cuenta con todos los archivos necesarios para correr una página web de tipo Single Page Application (SPA).
 La idea es que, luego descargar el repositorio y ejecutar el comando `docker-compose up`, accedas mediante un navegador web a la url `http://localhost:8000/` y administres los dispositivos en una app que s evería de la siguiente manera en pleno funcionamiento:
 
-![architecture](doc/pantalla final.png)
+![architecture](doc/pantalla_final.png)
 
 El objetivo de esta página es ser la interfaz que permita al usuario interactuar, de la manera más sencilla posible, con una base de datos. Esta aplicación es del tipo CRUD ya que permite al usuario pueda agregar dispositivos a la base de datos (<b>C</b>reate), consultar sus valores(<b>R</b>ead), actualizar la base de datos (<b>U</b>pdate) y borrar elementos contenidos en esta  (<b>D</b>elete). Para realizar estas tareas, se cuenta con los siguientes elementos principales:
 <ul>
