@@ -60,24 +60,31 @@
                 <div id="modal1" class="modal">
                     <div class="modal-content">
                         <div >
-                            <h1>Cargar dispositivo</h1>
-                            <label for="iNombre">Nombre de usuario</label>
-                            <input id="iNombre" type="text" value="" placeholder="jlopez" />
-
+                            <h1>Agregar nuevo dispositivo</h1>
+                            <br>                            
+                            
+                            <div class="input-field"> 
+                                <label for="iNombre"> Nombre del dispositivo </label>
+                                <input id="iNombre" type="text" value="" placeholder="Luces dormitorio principal">
+                            </div>
+                            
                             <div class="input-field">
-                                <label for="iPassword">Password</label>
-                                <input id="iPassword" type="password" class="validate">
+                                <label for="iDescripcion"> Descripción del dispositivo </label>
+                                <input id="iDescripcion" type="text" value="" placeholder="Encendido y apagado de luces de dormitorio principal">
                             </div>
 
-                            <p>
-                                <label>
-                                    <input type="checkbox" />
-                                    <span>Recordar usuario y contraseña</span>
-                                </label>
-                            </p>
+                            <div class="input-field">
+                                <select>
+                                  <option value="" disabled selected>Elegir tipo de dispositivo</option>
+                                  <option value="on/off">On/Off</option>
+                                  <option value="variable">Variable</option>
+                                </select>
+                                <label>Tipo de dispositivo</label>
+                            </div>
+
                             <p id="pInfo"></p>
 
-                            <button id="btnGuardar" class="modal-close  btn">Guardar</button>
+                            <button id="btnGuardar" class="btn">Agregar</button>
                         </div>
                     </div>
                 </div>

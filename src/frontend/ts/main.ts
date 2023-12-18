@@ -1,14 +1,14 @@
 
 var M;
 class Main implements EventListenerObject{
-    public usuarios: Array<Usuario>= new Array<Usuario>();
+    public dispositivos: Array<Device>= new Array<Device>();
 
 
     private buscarPersonas() {
 
 
-        for (let u of this.usuarios) {
-            console.log(u.mostrar(),this.usuarios.length);
+        for (let u of this.dispositivos) {
+            console.log(u.mostrar(),this.dispositivos.length);
         }
     }
     
@@ -40,7 +40,7 @@ class Main implements EventListenerObject{
                           Off
                           <input type="checkbox"`;
                         itemList +=`deviceId="${d.id}" id="cb_${d.id}"`
-                        if (d.state) {
+                        if (d.value) {
                             itemList+= ` checked `
                         }
 
@@ -124,26 +124,33 @@ class Main implements EventListenerObject{
         xmlRequest.send(JSON.stringify(s));
     }
 
-    private cargarUsuario(): void{
+    private agregarDispositivo(): void{
         let iNombre =<HTMLInputElement> document.getElementById("iNombre");
-        let iPassword = <HTMLInputElement>document.getElementById("iPassword");
+        let iDescripcion =<HTMLInputElement> document.getElementById("iDescripcion");
+        let iTipo = <HTMLSelectElement | null>document.querySelector('select');
         let pInfo = document.getElementById("pInfo");
-        if (iNombre.value.length > 3 && iPassword.value.length > 3) {
-            let usuari1: Usuario = new Usuario(iNombre.value, "user", iPassword.value,23);
-            this.usuarios.push(usuari1);
-            iNombre.value = "";
-            iPassword.value = "";
-
-
-            pInfo.innerHTML = "Se cargo correctamente!";
-            pInfo.className ="textoCorrecto";
-
-        } else {
-            pInfo.innerHTML = "Usuairo o contraseña incorrecta!!!";
+        const iState: boolean = false;
+        const iId: number = Math.floor(Math.random() * 100000);
+        // Verifica si los campos requeridos están completados
+        if (iNombre.value.trim() === "" || !iTipo || iTipo.value === "") {
+            // Muestra un mensaje de error o realiza la lógica que desees
+            pInfo.innerText = "Asegurate de completar los campos Nombre y Tipo";
             pInfo.className ="textoError";
+        } else {
+            // Si todo está bien, toma los valores, limpia el contenido de los campos y cierra el modal
+            let dispositivo1: Device = new Device(iId, iNombre.value, iDescripcion.value, iTipo.value, 0);
+            this.dispositivos.push(dispositivo1);
+            iNombre.value = "";
+            iDescripcion.value = "";
+            iTipo.value == "";
+
+            pInfo.innerText = "Dispositivo agregado correctamente";
+            pInfo.className ="textoCorrecto";
+            M.Modal.getInstance(document.getElementById('modal1')).close();
+            pInfo.innerText = "";
+
+            console.log(dispositivo1.mostrar());
         }
-
-
     }
 
     private pruebaPost() {
@@ -171,7 +178,7 @@ class Main implements EventListenerObject{
         if ("btnListar" == elemento.id) {
             this.manipularLista();          
         } else if ("btnGuardar" == elemento.id) {
-            this.cargarUsuario();
+            this.agregarDispositivo();
         }else if ("sendPost" == elemento.id){
             this.pruebaPost();
         } else if (elemento.id.startsWith("cb_")) {
