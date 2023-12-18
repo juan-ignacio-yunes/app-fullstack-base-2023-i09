@@ -44,13 +44,13 @@ CREATE TABLE `Devices` (
 -- Dumping data for table `Devices`
 --
 
-INSERT INTO `Devices` (`id`, `name`, `description`, `state`, `type`) VALUES
-(1, 'Lampara 1', 'Luz living', 1, 0),
-(2, 'Lampara 2', 'Luz cocina', 0, 0),
-(3, 'Velador', 'Velador living', 1, 0),
-(4, 'Persiana 1', 'Persiana living', 1, 1),
-(5, 'Persiana 2', 'Persiana de la cocina', 1, 1),
-(6, 'Persiana 3', 'Persiana balcon', 0, 1);
+INSERT INTO `Devices` (`id`, `name`, `description`, `value`, `type`) VALUES
+(1, 'Lampara 1', 'Luz living', 0, 'on/off'),
+(2, 'Lampara 2', 'Luz cocina', 0, 'on/off'),
+(3, 'Velador', 'Velador living', 0, 'on/off'),
+(4, 'Persiana 1', 'Persiana living', 0, 'variable'),
+(5, 'Persiana 2', 'Persiana de la cocina', 0, 'variable'),
+(6, 'Persiana 3', 'Persiana balcon', 0, 'variable');
 
 --
 -- Indexes for dumped tables
