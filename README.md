@@ -6,12 +6,9 @@ Web App Full Stack Base
 =======================
 
 <details><summary>
-
 ## Detalles técnicos (elaborados por los docentes de la cátedra)
-
-
 </summary><br>
-Yendo al grano, la idea es que mediane luego de descargar el reporsitorio y ejecutar el comando docker-compose up puedas ver una página como esta en tu servidor local:
+
 
 
 Web App Full Stack Base
