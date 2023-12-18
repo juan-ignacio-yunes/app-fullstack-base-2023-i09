@@ -53,6 +53,7 @@ Aquí se puede ver el elemento modal y los campos a completar para cargar el nue
 
 A continuación hay documentación detallada y mayor rigor técnico, elaborada por los docenes de la cátedra.
 
+
 <details><summary>
 
 ## Documentación de la cátedra
