@@ -44,13 +44,18 @@ class Main implements EventListenerObject {
                             // y para los de tipo "variable" va un elemento range con mínimo 0% y máx 100%. Se pone en una columna de 6 espacios para que no ocupe todo el ancho del list item
                             itemList += `<div class="row">
                                 <div class="col s6">
-                                <form action="#">
-                                    <p class="range-field">
-                                        <input type="range" deviceId="${d.id}" type="${d.type}" id="range_${d.id}" min="0" max="100" value="${d.value}" />
-                                    </p>
-                                </form>
-                                <label for="range_${d.id}_min">0%</label>
-                                <label for="range_${d.id}_max" class="right">100%</label>
+                                    <form action="#">
+                                        <p class="range-field">
+                                            <input type="range" deviceId="${d.id}" type="${d.type}" id="range_${d.id}" min="0" max="100" value="${d.value}" />
+                                        </p>
+                                    </form>
+                                    <label for="range_${d.id}_min">0%</label>
+                                    <label for="range_${d.id}_max" class="right">100%</label>
+                                </div>
+                                <div class="col s2">
+                                        <p>
+                                            valor actual = ${d.value} %
+                                        </p>
                                 </div>
                             </div>`;
                         }
@@ -196,7 +201,7 @@ class Main implements EventListenerObject {
 
     private agregarDispositivo(): void {
         let iNombre = <HTMLInputElement>document.getElementById("iNombre");
-        let iDescripcion = <HTMLInputElement>document.getElementById("iDescripcion");
+        let iDescripcion = <HTMLInputElement | null>document.getElementById("iDescripcion");
         let iTipo = <HTMLSelectElement | null>document.querySelector('select');
         let pInfo = document.getElementById("pInfo");
         // Verifica si los campos requeridos están completados
@@ -206,18 +211,45 @@ class Main implements EventListenerObject {
             pInfo.className = "textoError";
         } else {
             // Si todo está bien, toma los valores, limpia el contenido de los campos y cierra el modal
-            let dispositivo1: Device = new Device(iNombre.value, iDescripcion.value, iTipo.value, 0);
-            this.dispositivos.push(dispositivo1);
-            iNombre.value = "";
-            iDescripcion.value = "";
-            iTipo.value == "";
-
             pInfo.innerText = "Dispositivo agregado correctamente";
             pInfo.className = "textoCorrecto";
             M.Modal.getInstance(document.getElementById('modal1')).close();
             pInfo.innerText = "";
-
+            
+            let dispositivo1: Device = new Device(iNombre.value, iDescripcion.value, iTipo.value, 0);
+            this.dispositivos.push(dispositivo1);
+            iNombre.value = "";
+            iDescripcion.value =  "";
+            iTipo.value = "";
+          
             console.log(dispositivo1.mostrar());
+            
+            let xmlRequest = new XMLHttpRequest();
+            xmlRequest.onreadystatechange = () => {
+                if (xmlRequest.readyState == 4) {
+                    if (xmlRequest.status == 200) {
+                        console.log("respuesta del backend",xmlRequest.status, xmlRequest.responseText);
+                    } else {
+                        alert("no se pudo agregar el disp");
+                    }
+                }                
+            }
+            
+            let s = {
+                name: this.dispositivos[this.dispositivos.length - 1].name,
+                description: this.dispositivos[this.dispositivos.length - 1].description,
+                type: this.dispositivos[this.dispositivos.length - 1].type
+            };//el json a enviar en el body del post
+
+            console.log(this.dispositivos)
+            console.log(s)    
+            console.log(JSON.stringify(s))        
+
+            xmlRequest.open("POST", "http://localhost:8000/devices", true)
+            xmlRequest.setRequestHeader("Content-Type", "application/json");
+            xmlRequest.send(JSON.stringify(s));
+
+            this.manipularLista();
         }
     }
 

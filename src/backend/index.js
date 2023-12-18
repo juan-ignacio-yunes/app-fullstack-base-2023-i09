@@ -49,7 +49,19 @@ app.delete("/devices/:id", (req, res, next) => {
     });
 });
 
-app.put("/device", (req, res, next) => {
+app.post("/devices", (req, res, next) => {
+    console.log("llegó la query INSERT INTO Devices (id, name, description, value, type) VALUES (NULL, "+req.body.name+", "+req.body.description+", '0', "+req.body.type+")");
+    //utils.query("INSERT INTO Devices (id, name, description, value, type) VALUES (NULL, "+req.body.name+", "+req.body.description+", '0', "+req.body.type+")", (err, rsp, fields) => {
+    utils.query("INSERT INTO Devices (name, description, value, type) VALUES (?, ?, '0', ?)", [req.body.name, req.body.description, req.body.type], (err, rsp, fields) => {
+        if (req.body.name == "") {
+                res.status(409).send("no tengo nada que hacer");
+            } else {
+                res.status(200).send("se guardo el dispositivo");
+            }
+    });
+});
+
+app.put("/device/:id", (req, res, next) => {
     console.log("Llego el update", "UPDATE Devices SET value = " + req.body.value + " WHERE id = " + req.body.id);
     utils.query("UPDATE Devices SET value = " + req.body.value + " WHERE id = " + req.body.id, (err, rsp, fields) => {
         if (req.body.name == "") {
