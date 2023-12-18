@@ -5,14 +5,12 @@ class Main implements EventListenerObject{
 
 
     private buscarPersonas() {
-
-
         for (let u of this.dispositivos) {
             console.log(u.mostrar(),this.dispositivos.length);
         }
     }
     
-    private buscarDevices() {
+    private getDevices() {
 
         let xmlRequest = new XMLHttpRequest();
 
@@ -93,7 +91,7 @@ class Main implements EventListenerObject{
 
         if (ul && ul.childElementCount === 0) {
             // Si la lista está vacía, mostrar y cambiar el botón a "Ocultar"
-            this.buscarDevices();
+            this.getDevices();
             botonListar.innerText = "Ocultar";
         } else {
             // Si la lista está llena, ocultar y cambiar el botón a "Listar"
@@ -129,8 +127,6 @@ class Main implements EventListenerObject{
         let iDescripcion =<HTMLInputElement> document.getElementById("iDescripcion");
         let iTipo = <HTMLSelectElement | null>document.querySelector('select');
         let pInfo = document.getElementById("pInfo");
-        const iState: boolean = false;
-        const iId: number = Math.floor(Math.random() * 100000);
         // Verifica si los campos requeridos están completados
         if (iNombre.value.trim() === "" || !iTipo || iTipo.value === "") {
             // Muestra un mensaje de error o realiza la lógica que desees
@@ -138,7 +134,7 @@ class Main implements EventListenerObject{
             pInfo.className ="textoError";
         } else {
             // Si todo está bien, toma los valores, limpia el contenido de los campos y cierra el modal
-            let dispositivo1: Device = new Device(iId, iNombre.value, iDescripcion.value, iTipo.value, 0);
+            let dispositivo1: Device = new Device(iNombre.value, iDescripcion.value, iTipo.value, 0);
             this.dispositivos.push(dispositivo1);
             iNombre.value = "";
             iDescripcion.value = "";

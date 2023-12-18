@@ -48,6 +48,22 @@ app.post("/device",(req,res,next)=>{
     
 });
 
+app.get("/devices/",(req,res,next)=>{
+    console.log("request: ",req)
+    console.log("response: ",res)
+    utils.query("select * from Devices",(err,rsp,fields)=>{
+        if(err==null){
+            console.log("rsp: ",rsp);
+            res.status(200).send(JSON.stringify(rsp));
+        }else{
+            console.log("err: ",err);
+            res.status(409).send(err);
+        }
+        
+    });
+    
+});
+/*
 app.get('/devices/', function(req, res, next) {
     devices = [
         { 
@@ -73,7 +89,7 @@ app.get('/devices/', function(req, res, next) {
         }
     ]
     res.send(JSON.stringify(devices)).status(200);
-});
+});*/
 
 app.listen(PORT, function(req, res) {
     console.log("NodeJS API running correctly");

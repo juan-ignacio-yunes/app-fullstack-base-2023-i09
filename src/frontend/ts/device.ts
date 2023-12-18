@@ -5,8 +5,8 @@ class Device{
   type: string;
   value: number;
   
-  constructor(id: number, name: string, description: string, type: string, value: number) {
-    this.id = id;
+  constructor(name: string, description: string, type: string, value: number) {
+    //this.id = id;
     this.name = name;
     this.description = description;
     this.type = type;
