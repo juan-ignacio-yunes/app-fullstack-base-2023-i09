@@ -1,15 +1,64 @@
-<a href="https://www.gotoiot.com/">
-    <img src="doc/gotoiot-logo.png" alt="logo" title="Goto IoT" align="right" width="60" height="60" />
-</a>
 
-Web App Full Stack Base
-=======================
+Trabajo Final de la materia Desarrollo de Aplicaciones web
+==========================================================
+
+Este repositorio cuenta con todos los archivos necesarios para correr una página web de tipo Single Page Application (SPA).
+La idea es que, luego descargar el repositorio y ejecutar el comando `docker-compose up`, accedas mediante un navegador web a la url `http://localhost:8000/` y veas algo como esto:
+
+![architecture](doc/webapp final.png)
+
+El objetivo de esta página es ser la interfaz que permita al usuario interactuar, de la manera más sencilla posible, con una base de datos. Esta aplicación es del tipo CRUD ya que permite al usuario pueda agregar dispositivos a la base de datos (<b>C</b>reate), consultar sus valores(<b>R</b>ead), actualizar la base de datos (<b>U</b>pdate) y borrar elementos contenidos en esta  (<b>D</b>elete). Para realizar estas tareas, se cuenta con los siguientes elementos principales:
+<ul>
+  <li>Botón "LISTAR"</li>
+  <li>Botón "AGREGAR DISPOSITIVO"</li>
+  <li>Lista de dispositivos</li>
+  <li>Íconos para eliminar dispositivos</li>
+  <li>Elemento modal que se usa para agregar dispositivos </li>
+</ul>
+
+Ya hay algunos dispositivos cargados, por lo que comenzaremos a describir la funcionaidad del botón listar.
+Al acceder por primera vez a la página, esta se verá así:
+
+![architecture](doc/pantalla inicial.png)
+
+Al clickear el botón listar, se desplegará una lista de los dispositivos que se encuentren cargados en la base de datos. Esto se haec mediante una función que dispara el protocolo HTTP con método GET al endpoint http://localhost:8000/devices/
+Cada uno de ellos tiene los siguientes parámetros:
+
+id: número que permite identificar inequívocamente a cada elemento de la base de datos.
+
+name: texto que corresponde nombre del dispositivo. Será el campo principal que se mostrará al usuario.
+
+description: texto que agrega información.
+
+type: texto que puede tomar valores "on/off" o "variable" y la idea original era que sirviera para diferenciar entre los dispositivos que tienen sólo dos estados disponibles (encendido o apagado) y aquellos que pueden tomar un rango de valores.
+
+value: número que indica el estado el dispositivo. Hay algunos que pueden tomar valores dentro de un rango y se expresa que están entre el 0% y el 100% de dicho segmento y hay otros que sólo pueden tomar los valores 0 o 1, que corresponden a estado apagado y encendido correspondientemente.
+
+En la lista sólo estarán visibles el nombe, la descripción y el value.
+
+Cada elemento de la lista, además de mostrar los valores del dispositivo, tiene las siguientes opciones:
+
+1- Modifica el value. Para los elementos de naturaleza on/off, esto se hace mediante un switch. Para los otros, se tiene un elemento maerialize de tipo range. En los extremos de este elemento range, hay eqtiquetas que indican el mínimo y el máximo y también se indica el valor al momento de actualizr la lista (ya sea mediante el botón listar o la actualización automática al eliminar o agregar un dispositivo). Cuando se modifica el valor de un switch o un range, se ejecutan sendas funciones que realizan una request tipo PUT a un endpoint particular del dispositivo. En el lado del backend se recibe el id y se ejecuta la query {UPDATE Devices SET value = "value" WHERE id = "deviceId"}.
+
+2- Opción de eliminarlo definitivamente mediante un ícono que referencia a un recipiente de residuos. Para llevar a cabo esta acción el usuario solamente necesita pinchar el ícono con el mouse. Esto dispara una función que genera un request HTTP que usa el método DELETE y comunica al endpoint correspondiente los parámetros y sus valores para que se ejecute la query SQL {"DELETE FROM Devices WHERE id= "deviceId"} a la base de datos.
+
+![architecture](doc/botones.png)
+
+El botón para agregar dispositivos, abre un elemento modal en el cuál se cargan los valores inciales. Dentro de este hay otro botón para guardar los valores cagados. Para poder xoncretar la acción se deben cumplir dos reglas: el dispositivo debe tener un nombre y un tipo. El nombre y la descripción se completan mediante el tecaldo y el ipo se elige de una lista desplegable. Al hacer click en el botón de guardado se ejecuta una función que envía una request tipo POST para generar el dispositivo en la base de datos. Del lado del backend se cuenta con una función que realiza una query {INSERT INTO Devices (name, description, value, type) VALUES (?, ?, '0', ?)", [req.body.name, req.body.description, req.body.type]}. Como se puede observar, el parámetro value de los dispositivos al momento de cargar es siempre cero, lo que equivale a 0% o apagado dependiendo de la naturaleza del elemento.
+
+Aquí se puede ver el elemento modal y los campos a completar para cargar el nuevo dispositivo.
+
+![architecture](doc/modal.png)
+
+
+A continuación hay documentación detallada y mayor rigor técnico, elaborada por los docenes de la cátedra.
 
 <details><summary>
-## Detalles técnicos (elaborados por los docentes de la cátedra)
+
+## Documentación de la cátedra
 </summary><br>
 
-
+A continuación hay documentación detallada y mayor rigor técnico, elaborada por los docenes de la cátedra.
 
 Web App Full Stack Base
 =======================
@@ -255,7 +304,6 @@ Las colaboraciones principales fueron realizadas por:
 
 También podés mirar todas las personas que han participado en la [lista completa de contribuyentes](https://github.com/###/contributors).
 
-</details>
 
 ## Licencia 📄
 
@@ -264,3 +312,5 @@ Este proyecto está bajo Licencia ([MIT](https://choosealicense.com/licenses/mit
 ---
 
 **Copyright © Goto IoT 2021** ⌨️ [**Website**](https://www.gotoiot.com) ⌨️ [**Group**](https://groups.google.com/g/gotoiot) ⌨️ [**Github**](https://www.github.com/gotoiot) ⌨️ [**Twitter**](https://www.twitter.com/gotoiot) ⌨️ [**Wiki**](https://github.com/gotoiot/doc/wiki)
+
+</details>
